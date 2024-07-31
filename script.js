@@ -1,17 +1,25 @@
-// Function to fetch and parse the CSV data
+// Function to fetch and parse the CSV data using Papa Parse
 function fetchData() {
-    return fetch('data.csv')  // Make sure this path matches the CSV file's location in your repository
+    return fetch('guyana monthly data visa 12 months - Sheet1.csv')  // Ensure the file path matches
         .then(response => response.text())
-        .then(data => Papa.parse(data, { header: true, dynamicTyping: true }).data);
+        .then(data => Papa.parse(data, {
+            header: true,
+            dynamicTyping: true,
+            skipEmptyLines: true,
+            transformHeader: header => header.trim(),
+            complete: function(results) {
+                return results.data;
+            }
+        }));
 }
 
-// Function to display the full data in a table
+// Function to display the full data in a table format
 function loadFullData() {
     fetchData().then(data => {
         const dataView = document.getElementById('dataView');
-        let html = '<table class="table"><thead><tr>';
+        let html = '<table class="table table-striped"><thead class="table-dark"><tr>';
 
-        // Create table headers from keys
+        // Create table headers from the first data row keys
         Object.keys(data[0]).forEach(key => {
             html += `<th>${key}</th>`;
         });
@@ -28,13 +36,15 @@ function loadFullData() {
 
         html += '</tbody></table>';
         dataView.innerHTML = html;
+    }).catch(error => {
+        console.error('Error loading the data:', error);
     });
 }
 
-// Function to display data month-by-month using Chart.js
+// Example function to display monthly data using Chart.js
 function loadMonthlyData() {
     fetchData().then(data => {
-        const months = [...new Set(data.map(item => item.Month))];
+        const months = [...new Set(data.map(item => item.Month))].sort();
         const transactionCounts = months.map(month =>
             data.filter(item => item.Month === month).reduce((acc, cur) => acc + cur['Transaction Count'], 0)
         );
@@ -59,81 +69,14 @@ function loadMonthlyData() {
                     y: {
                         beginAtZero: true
                     }
-                }
+                },
+                responsive: true,
+                maintainAspectRatio: false
             }
         });
+    }).catch(error => {
+        console.error('Error processing monthly data:', error);
     });
 }
 
-// Function to display data segmented by category (similar structure to loadMonthlyData)
-function loadSegmentData() {
-    fetchData().then(data => {
-        const categories = [...new Set(data.map(item => item['Merchant Category Code']))];
-        const totalsByCategory = categories.map(cat =>
-            data.filter(item => item['Merchant Category Code'] === cat).reduce((acc, cur) => acc + cur['Transaction Amount'], 0)
-        );
-
-        const ctx = document.createElement('canvas');
-        document.getElementById('dataView').innerHTML = '';
-        document.getElementById('dataView').appendChild(ctx);
-
-        new Chart(ctx, {
-            type: 'bar',
-            data: {
-                labels: categories,
-                datasets: [{
-                    label: 'Total Transaction Amount by Category',
-                    data: totalsByCategory,
-                    backgroundColor: 'rgba(255, 99, 132, 0.2)',
-                    borderColor: 'rgba(255, 99, 132, 1)',
-                    borderWidth: 1
-                }]
-            },
-            options: {
-                scales: {
-                    y: {
-                        beginAtZero: true
-                    }
-                }
-            }
-        });
-    });
-}
-
-// Function to calculate and display average ticket prices (similar to other load functions)
-function loadAverageTicket() {
-    fetchData().then(data => {
-        const categories = [...new Set(data.map(item => item['Merchant Category Code']))];
-        const averageTickets = categories.map(cat => {
-            const filteredData = data.filter(item => item['Merchant Category Code'] === cat);
-            const totalAmount = filteredData.reduce((acc, cur) => acc + cur['Transaction Amount'], 0);
-            const totalCount = filteredData.reduce((acc, cur) => acc + cur['Transaction Count'], 0);
-            return totalAmount / totalCount;
-        });
-
-        const ctx = document.createElement('canvas');
-        document.getElementById('dataView').innerHTML = '';
-        document.getElementById('dataView').appendChild(ctx);
-
-        new Chart(ctx, {
-            type: 'bar',
-            data: {
-                labels: categories,
-                datasets: [{
-                    label: 'Average Ticket Price by Category',
-                    data: averageTickets,
-                    backgroundColor: 'rgba(54, 162, 235, 0.2)',
-                    borderColor: 'rgba(54, 162, 235, 1)',
-                    borderWidth: 1
-                }]
-            },
-            options: {
-                scales: {
-                    y: {
-                        beginAtZero: true
-                    }
-                }
-            }
-        });
-    });
-}
+// Additional functions for segment data and average ticket prices can be modeled similarly
