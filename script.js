@@ -4,14 +4,10 @@ function fetchData() {
         .then(response => response.text())
         .then(csv => Papa.parse(csv, {
             header: true,
-            dynamicTyping: true,
             skipEmptyLines: true,
-            transformHeader: header => header.trim(),
-            complete: function (results) {
-                return results.data;
-            }
+            transformHeader: header => header.trim()
         }))
-        .then(results => results.data);
+        .then(results => results.data.filter(row => row['Merchant Category Code'] && row['Month'] !== 'Total'));
 }
 
 // Populate the dropdown with merchant categories
@@ -30,7 +26,7 @@ document.addEventListener('DOMContentLoaded', function() {
     fetchData().then(data => {
         const categories = data.map(item => ({
             code: item['Merchant Category Code'],
-            name: item['Month']  // Assuming 'Month' column has the category names
+            name: item['Month']  // Assuming 'Month' column has the category names after the first two rows
         })).filter((value, index, self) =>
             index === self.findIndex((t) => (
                 t.code === value.code && t.name === value.name
@@ -47,12 +43,12 @@ function displayCategoryData() {
     if (!selectedCategory) return; // Skip if "Select a Merchant Category" is chosen
 
     fetchData().then(data => {
-        const filteredData = data.filter(item => item['Merchant Category Code'] === parseInt(selectedCategory));
-        const totalVolume = filteredData.reduce((acc, cur) => acc + cur['Transaction Amount'], 0);
-        const totalCount = filteredData.reduce((acc, cur) => acc + cur['Transaction Count'], 0);
+        const filteredData = data.filter(item => item['Merchant Category Code'] === selectedCategory);
+        const totalVolume = filteredData.reduce((acc, cur) => acc + parseFloat(cur['Transaction Amount'].replace(/,/g, '')), 0);
+        const totalCount = filteredData.reduce((acc, cur) => acc + parseInt(cur['Transaction Count'].replace(/,/g, '')), 0);
 
         const dataView = document.getElementById('dataView');
-        dataView.innerHTML = `<h3>Total Volume: ${totalVolume}</h3>
-                              <h3>Total Count: ${totalCount}</h3>`;
+        dataView.innerHTML = `<h3>Total Volume: ${totalVolume.toLocaleString()}</h3>
+                              <h3>Total Count: ${totalCount.toLocaleString()}</h3>`;
     });
 }
