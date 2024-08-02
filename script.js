@@ -25,19 +25,21 @@ function setupData() {
             const code = row['Merchant Category Code'];
             if (code && !categories.has(code)) {
                 categories.set(code, {
-                    name: row['Merchant Category Name'], // Assuming there's a column for names
+                    name: row['Merchant Category Name'], // Ensure column name for category names is correct
                     totalAmount: 0,
                     totalCount: 0
                 });
             }
-            Object.keys(row).forEach(key => {
-                if (key.includes('Transaction Amount')) {
-                    categories.get(code).totalAmount += parseFloat(row[key]) || 0;
-                }
-                if (key.includes('Transaction Count')) {
-                    categories.get(code).totalCount += parseInt(row[key]) || 0;
-                }
-            });
+            if (categories.has(code)) { // Only add amounts if the code exists to avoid undefined entries
+                Object.keys(row).forEach(key => {
+                    if (key.includes('Transaction Amount')) {
+                        categories.get(code).totalAmount += parseFloat(row[key]) || 0;
+                    }
+                    if (key.includes('Transaction Count')) {
+                        categories.get(code).totalCount += parseInt(row[key]) || 0;
+                    }
+                });
+            }
         });
 
         populateDropdown(categories);
@@ -47,6 +49,8 @@ function setupData() {
 // Fill the dropdown menu with the categories
 function populateDropdown(categories) {
     const select = document.getElementById('merchantCategorySelect');
+    // Clear existing options first
+    select.innerHTML = '<option value="">Select a Merchant Category</option>';
     categories.forEach((info, code) => {
         const option = document.createElement('option');
         option.value = code;
@@ -59,28 +63,30 @@ function populateDropdown(categories) {
 function displayCategoryData() {
     const select = document.getElementById('merchantCategorySelect');
     const selectedCode = select.value;
-    if (!selectedCode) return;
+    if (!selectedCode) {
+        document.getElementById('dataView').innerHTML = 'Please select a merchant category.';
+        return;
+    }
 
     fetchData().then(data => {
-        const categoryInfo = {
-            totalAmount: 0,
-            totalCount: 0
-        };
+        const filteredData = data.filter(item => item['Merchant Category Code'] === selectedCode);
+        let totalAmount = 0;
+        let totalCount = 0;
 
-        data.filter(item => item['Merchant Category Code'] === selectedCode).forEach(item => {
+        filteredData.forEach(item => {
             Object.keys(item).forEach(key => {
                 if (key.includes('Transaction Amount')) {
-                    categoryInfo.totalAmount += parseFloat(item[key]) || 0;
+                    totalAmount += parseFloat(item[key]) || 0;
                 }
                 if (key.includes('Transaction Count')) {
-                    categoryInfo.totalCount += parseInt(item[key]) || 0;
+                    totalCount += parseInt(item[key]) || 0;
                 }
             });
         });
 
         const dataView = document.getElementById('dataView');
-        dataView.innerHTML = `<h3>Total Volume for ${select.selectedOptions[0].textContent}: ${categoryInfo.totalAmount.toLocaleString()}</h3>
-                              <h3>Total Count for ${select.selectedOptions[0].textContent}: ${categoryInfo.totalCount.toLocaleString()}</h3>`;
+        dataView.innerHTML = `<h3>Total Volume for ${select.options[select.selectedIndex].text}: ${totalAmount.toLocaleString()}</h3>
+                              <h3>Total Count for ${select.options[select.selectedIndex].text}: ${totalCount.toLocaleString()}</h3>`;
     }).catch(error => {
         console.error('Error displaying category data:', error);
         document.getElementById('dataView').innerHTML = 'Error displaying data.';
