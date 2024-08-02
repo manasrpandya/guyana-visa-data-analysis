@@ -1,82 +1,58 @@
 // Function to fetch and parse the CSV data using Papa Parse
 function fetchData() {
-    return fetch('guyana monthly data visa 12 months - Sheet1.csv')  // Ensure the file path matches
+    return fetch('guyana monthly data visa 12 months - Sheet1.csv') // Ensure the file path matches
         .then(response => response.text())
-        .then(data => Papa.parse(data, {
+        .then(csv => Papa.parse(csv, {
             header: true,
             dynamicTyping: true,
             skipEmptyLines: true,
             transformHeader: header => header.trim(),
-            complete: function(results) {
+            complete: function (results) {
                 return results.data;
             }
-        }));
+        }))
+        .then(results => results.data);
 }
 
-// Function to display the full data in a table format
-function loadFullData() {
-    fetchData().then(data => {
-        const dataView = document.getElementById('dataView');
-        let html = '<table class="table table-striped"><thead class="table-dark"><tr>';
-
-        // Create table headers from the first data row keys
-        Object.keys(data[0]).forEach(key => {
-            html += `<th>${key}</th>`;
-        });
-        html += '</tr></thead><tbody>';
-
-        // Create table rows from data
-        data.forEach(row => {
-            html += '<tr>';
-            Object.values(row).forEach(val => {
-                html += `<td>${val}</td>`;
-            });
-            html += '</tr>';
-        });
-
-        html += '</tbody></table>';
-        dataView.innerHTML = html;
-    }).catch(error => {
-        console.error('Error loading the data:', error);
+// Populate the dropdown with merchant categories
+function populateDropdown(categories) {
+    const select = document.getElementById('merchantCategorySelect');
+    categories.forEach(category => {
+        const option = document.createElement('option');
+        option.value = category.code;
+        option.textContent = `${category.name} (${category.code})`;
+        select.appendChild(option);
     });
 }
 
-// Example function to display monthly data using Chart.js
-function loadMonthlyData() {
+// Load data and handle dropdown population
+document.addEventListener('DOMContentLoaded', function() {
     fetchData().then(data => {
-        const months = [...new Set(data.map(item => item.Month))].sort();
-        const transactionCounts = months.map(month =>
-            data.filter(item => item.Month === month).reduce((acc, cur) => acc + cur['Transaction Count'], 0)
+        const categories = data.map(item => ({
+            code: item['Merchant Category Code'],
+            name: item['Month']  // Assuming 'Month' column has the category names
+        })).filter((value, index, self) =>
+            index === self.findIndex((t) => (
+                t.code === value.code && t.name === value.name
+            ))
         );
 
-        const ctx = document.createElement('canvas');
-        document.getElementById('dataView').innerHTML = '';
-        document.getElementById('dataView').appendChild(ctx);
+        populateDropdown(categories);
+    });
+});
 
-        new Chart(ctx, {
-            type: 'line',
-            data: {
-                labels: months,
-                datasets: [{
-                    label: 'Total Transactions by Month',
-                    data: transactionCounts,
-                    borderColor: 'rgb(75, 192, 192)',
-                    tension: 0.1
-                }]
-            },
-            options: {
-                scales: {
-                    y: {
-                        beginAtZero: true
-                    }
-                },
-                responsive: true,
-                maintainAspectRatio: false
-            }
-        });
-    }).catch(error => {
-        console.error('Error processing monthly data:', error);
+// Display category data when a merchant category is selected
+function displayCategoryData() {
+    const selectedCategory = document.getElementById('merchantCategorySelect').value;
+    if (!selectedCategory) return; // Skip if "Select a Merchant Category" is chosen
+
+    fetchData().then(data => {
+        const filteredData = data.filter(item => item['Merchant Category Code'] === parseInt(selectedCategory));
+        const totalVolume = filteredData.reduce((acc, cur) => acc + cur['Transaction Amount'], 0);
+        const totalCount = filteredData.reduce((acc, cur) => acc + cur['Transaction Count'], 0);
+
+        const dataView = document.getElementById('dataView');
+        dataView.innerHTML = `<h3>Total Volume: ${totalVolume}</h3>
+                              <h3>Total Count: ${totalCount}</h3>`;
     });
 }
-
-// Additional functions for segment data and average ticket prices can be modeled similarly
