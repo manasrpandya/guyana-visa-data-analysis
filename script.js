@@ -1,6 +1,6 @@
 // Function to fetch and parse the CSV data using Papa Parse
 function fetchData() {
-    return fetch('new_guyana monthly data visa 12 months - Sheet1.csv') // Update the file path as needed
+    return fetch('new_guyana monthly data visa 12 months - Sheet1.csv')  // Adjust the path as necessary
         .then(response => response.text())
         .then(csvText => {
             return new Promise((resolve, reject) => {
@@ -15,34 +15,33 @@ function fetchData() {
         });
 }
 
-// Populate the dropdown with merchant categories and process data for sums
+// Function to setup data and populate the dropdown
 function setupData() {
     fetchData().then(data => {
-        const categories = new Map(); // To hold unique categories and their data
-        data.forEach((item, index) => {
-            if (index > 1) { // Skipping the first two metadata rows
-                const code = item['Merchant Category Code'];
-                const name = item['Merchant Category Name']; // Assuming column name is corrected
-                if (!categories.has(code)) {
-                    categories.set(code, {
-                        name: name,
-                        totalAmount: 0,
-                        totalCount: 0
-                    });
-                }
-                // Aggregate amounts and counts
-                Object.keys(item).forEach(key => {
-                    if (key.includes('Transaction Amount')) {
-                        categories.get(code).totalAmount += parseFloat(item[key]) || 0;
-                    } else if (key.includes('Transaction Count')) {
-                        categories.get(code).totalCount += parseInt(item[key]) || 0;
-                    }
+        const categories = new Map(); // To hold unique categories
+
+        // Process each row to populate the categories map with sums
+        data.forEach(row => {
+            const code = row['Merchant Category Code'];
+            if (code && !categories.has(code)) {
+                categories.set(code, {
+                    name: row['Merchant Category Name'], // Assuming there's a column for names
+                    totalAmount: 0,
+                    totalCount: 0
                 });
             }
+            Object.keys(row).forEach(key => {
+                if (key.includes('Transaction Amount')) {
+                    categories.get(code).totalAmount += parseFloat(row[key]) || 0;
+                }
+                if (key.includes('Transaction Count')) {
+                    categories.get(code).totalCount += parseInt(row[key]) || 0;
+                }
+            });
         });
 
         populateDropdown(categories);
-    }).catch(error => console.error('Failed to fetch and process data:', error));
+    }).catch(error => console.error('Error fetching and processing data:', error));
 }
 
 // Fill the dropdown menu with the categories
@@ -62,11 +61,30 @@ function displayCategoryData() {
     const selectedCode = select.value;
     if (!selectedCode) return;
 
-    const info = categories.get(selectedCode);
-    const dataView = document.getElementById('dataView');
-    dataView.innerHTML = `<h3>Total Volume for ${info.name}: ${info.totalAmount.toLocaleString()}</h3>
-                          <h3>Total Count for ${info.name}: ${info.totalCount.toLocaleString()}</h3>`;
+    fetchData().then(data => {
+        const categoryInfo = {
+            totalAmount: 0,
+            totalCount: 0
+        };
+
+        data.filter(item => item['Merchant Category Code'] === selectedCode).forEach(item => {
+            Object.keys(item).forEach(key => {
+                if (key.includes('Transaction Amount')) {
+                    categoryInfo.totalAmount += parseFloat(item[key]) || 0;
+                }
+                if (key.includes('Transaction Count')) {
+                    categoryInfo.totalCount += parseInt(item[key]) || 0;
+                }
+            });
+        });
+
+        const dataView = document.getElementById('dataView');
+        dataView.innerHTML = `<h3>Total Volume for ${select.selectedOptions[0].textContent}: ${categoryInfo.totalAmount.toLocaleString()}</h3>
+                              <h3>Total Count for ${select.selectedOptions[0].textContent}: ${categoryInfo.totalCount.toLocaleString()}</h3>`;
+    }).catch(error => {
+        console.error('Error displaying category data:', error);
+        document.getElementById('dataView').innerHTML = 'Error displaying data.';
+    });
 }
 
-// Initialize the dropdown on page load
 document.addEventListener('DOMContentLoaded', setupData);
