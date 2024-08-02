@@ -4,51 +4,58 @@ function fetchData() {
         .then(response => response.text())
         .then(csv => Papa.parse(csv, {
             header: true,
+            dynamicTyping: true,
             skipEmptyLines: true,
-            transformHeader: header => header.trim()
+            complete: function (results) {
+                return results.data;
+            }
         }))
-        .then(results => results.data.filter(row => row['Merchant Category Code'] && row['Month'] !== 'Total'));
+        .then(results => results.data.filter(row => row['Merchant Category Code'] && !isNaN(row['Merchant Category Code'])));
 }
 
 // Populate the dropdown with merchant categories
-function populateDropdown(categories) {
-    const select = document.getElementById('merchantCategorySelect');
-    categories.forEach(category => {
-        const option = document.createElement('option');
-        option.value = category.code;
-        option.textContent = `${category.name} (${category.code})`;
-        select.appendChild(option);
+function populateDropdown() {
+    fetchData().then(data => {
+        const categories = [];
+        data.forEach(item => {
+            if (!categories.some(category => category.code === item['Merchant Category Code'])) {
+                categories.push({
+                    code: item['Merchant Category Code'],
+                    name: item['Month'] // Assuming 'Month' has category names
+                });
+            }
+        });
+
+        const select = document.getElementById('merchantCategorySelect');
+        categories.forEach(category => {
+            const option = document.createElement('option');
+            option.value = category.code;
+            option.textContent = `${category.name} (${category.code})`;
+            select.appendChild(option);
+        });
+    }).catch(error => {
+        console.error('Error fetching data:', error);
     });
 }
-
-// Load data and handle dropdown population
-document.addEventListener('DOMContentLoaded', function() {
-    fetchData().then(data => {
-        const categories = data.map(item => ({
-            code: item['Merchant Category Code'],
-            name: item['Month']  // Assuming 'Month' column has the category names after the first two rows
-        })).filter((value, index, self) =>
-            index === self.findIndex((t) => (
-                t.code === value.code && t.name === value.name
-            ))
-        );
-
-        populateDropdown(categories);
-    });
-});
 
 // Display category data when a merchant category is selected
 function displayCategoryData() {
     const selectedCategory = document.getElementById('merchantCategorySelect').value;
-    if (!selectedCategory) return; // Skip if "Select a Merchant Category" is chosen
+    if (!selectedCategory) return; // Skip if default option is selected
 
     fetchData().then(data => {
-        const filteredData = data.filter(item => item['Merchant Category Code'] === selectedCategory);
-        const totalVolume = filteredData.reduce((acc, cur) => acc + parseFloat(cur['Transaction Amount'].replace(/,/g, '')), 0);
-        const totalCount = filteredData.reduce((acc, cur) => acc + parseInt(cur['Transaction Count'].replace(/,/g, '')), 0);
+        const filteredData = data.filter(item => item['Merchant Category Code'].toString() === selectedCategory);
+        const totalVolume = filteredData.reduce((acc, cur) => acc + parseFloat(cur['Transaction Amount']), 0);
+        const totalCount = filteredData.reduce((acc, cur) => acc + parseInt(cur['Transaction Count']), 0);
 
         const dataView = document.getElementById('dataView');
-        dataView.innerHTML = `<h3>Total Volume: ${totalVolume.toLocaleString()}</h3>
-                              <h3>Total Count: ${totalCount.toLocaleString()}</h3>`;
+        dataView.innerHTML = `<h3>Total Volume: ${totalVolume.toFixed(2)}</h3>
+                              <h3>Total Count: ${totalCount}</h3>`;
+    }).catch(error => {
+        console.error('Error processing category data:', error);
+        document.getElementById('dataView').innerHTML = '<p>Error processing data.</p>';
     });
 }
+
+// Initialize dropdown on page load
+document.addEventListener('DOMContentLoaded', populateDropdown);
