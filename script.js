@@ -2,60 +2,66 @@
 function fetchData() {
     return fetch('guyana monthly data visa 12 months - Sheet1.csv') // Ensure the file path matches
         .then(response => response.text())
-        .then(csv => Papa.parse(csv, {
-            header: true,
-            dynamicTyping: true,
-            skipEmptyLines: true,
-            complete: function (results) {
-                return results.data;
-            }
-        }))
-        .then(results => results.data.filter(row => row['Merchant Category Code'] && !isNaN(row['Merchant Category Code'])));
+        .then(csvText => {
+            return new Promise((resolve, reject) => {
+                Papa.parse(csvText, {
+                    header: true,
+                    dynamicTyping: true,
+                    skipEmptyLines: true,
+                    complete: results => resolve(results.data),
+                    error: error => reject(error)
+                });
+            });
+        });
 }
 
 // Populate the dropdown with merchant categories
-function populateDropdown() {
-    fetchData().then(data => {
-        const categories = [];
-        data.forEach(item => {
-            if (!categories.some(category => category.code === item['Merchant Category Code'])) {
-                categories.push({
-                    code: item['Merchant Category Code'],
-                    name: item['Month'] // Assuming 'Month' has category names
-                });
-            }
-        });
-
-        const select = document.getElementById('merchantCategorySelect');
-        categories.forEach(category => {
-            const option = document.createElement('option');
-            option.value = category.code;
-            option.textContent = `${category.name} (${category.code})`;
-            select.appendChild(option);
-        });
-    }).catch(error => {
-        console.error('Error fetching data:', error);
+function populateDropdown(categories) {
+    const selectElement = document.getElementById('merchantCategorySelect');
+    categories.forEach(category => {
+        const option = document.createElement('option');
+        option.value = category.code;
+        option.textContent = `${category.name} (${category.code})`;
+        selectElement.appendChild(option);
     });
 }
 
-// Display category data when a merchant category is selected
+// Extract categories from the data
+function setupCategories() {
+    fetchData().then(data => {
+        const uniqueCategories = new Map(); // To avoid duplicates and maintain unique entries
+
+        // Loop through each data row and extract merchant category codes and names
+        data.forEach(row => {
+            if (row['Merchant Category Code'] && row['Month'] && !uniqueCategories.has(row['Merchant Category Code'])) {
+                uniqueCategories.set(row['Merchant Category Code'], row['Month']);
+            }
+        });
+
+        const categories = Array.from(uniqueCategories, ([code, name]) => ({ code, name }));
+        populateDropdown(categories);
+    }).catch(error => {
+        console.error('Error in setting up categories:', error);
+    });
+}
+
+// Function to calculate and display selected category data
 function displayCategoryData() {
-    const selectedCategory = document.getElementById('merchantCategorySelect').value;
-    if (!selectedCategory) return; // Skip if default option is selected
+    const selectedCode = document.getElementById('merchantCategorySelect').value;
+    if (!selectedCode) return;
 
     fetchData().then(data => {
-        const filteredData = data.filter(item => item['Merchant Category Code'].toString() === selectedCategory);
-        const totalVolume = filteredData.reduce((acc, cur) => acc + parseFloat(cur['Transaction Amount']), 0);
-        const totalCount = filteredData.reduce((acc, cur) => acc + parseInt(cur['Transaction Count']), 0);
+        const filteredData = data.filter(item => item['Merchant Category Code'] === parseInt(selectedCode));
+        const totalVolume = filteredData.reduce((sum, record) => sum + record['Transaction Amount'], 0);
+        const totalCount = filteredData.reduce((sum, record) => sum + record['Transaction Count'], 0);
 
-        const dataView = document.getElementById('dataView');
-        dataView.innerHTML = `<h3>Total Volume: ${totalVolume.toFixed(2)}</h3>
-                              <h3>Total Count: ${totalCount}</h3>`;
+        const displayDiv = document.getElementById('dataView');
+        displayDiv.innerHTML = `<h3>Total Volume: ${totalVolume.toLocaleString()}</h3><h3>Total Count: ${totalCount.toLocaleString()}</h3>`;
     }).catch(error => {
-        console.error('Error processing category data:', error);
+        console.error('Error in displaying category data:', error);
         document.getElementById('dataView').innerHTML = '<p>Error processing data.</p>';
     });
 }
 
-// Initialize dropdown on page load
-document.addEventListener('DOMContentLoaded', populateDropdown);
+// Initial setup
+document.addEventListener('DOMContentLoaded', setupCategories);
