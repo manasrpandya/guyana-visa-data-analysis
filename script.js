@@ -121,26 +121,18 @@ document.addEventListener("DOMContentLoaded", function() {
         { code: "9311", name: "TAX PAYMENTS" },
         { code: "9399", name: "GOV'T SERV - DEFAULT" }
     ];
-
-    const merchantSelect = document.getElementById("merchantSelect");
+    const merchantList = document.getElementById("merchantList");
     const plotContainer = document.getElementById("plotContainer");
 
-    // Populate the dropdown menu with merchant options
     merchants.forEach(merchant => {
-        const option = document.createElement("option");
-        option.value = merchant.code;
-        option.textContent = `${merchant.code} (${merchant.name})`;
-        merchantSelect.appendChild(option);
+        const listItem = document.createElement("li");
+        listItem.textContent = `${merchant.code} (${merchant.name})`;
+        listItem.addEventListener("click", () => displayPlot(merchant.code));
+        merchantList.appendChild(listItem);
     });
 
-    // Display the plot when a merchant is selected
-    merchantSelect.addEventListener("change", function() {
-        const selectedCode = this.value;
-        console.log('Selected Merchant Code:', selectedCode);
-        if (selectedCode) {
-            plotContainer.innerHTML = `<img src="merchant_plots/${selectedCode}.png" alt="Plot for merchant ${selectedCode}">`;
-        } else {
-            plotContainer.innerHTML = '';
-        }
-    });
+    function displayPlot(code) {
+        plotContainer.innerHTML = `<img src="merchant_plots/${code}.png" alt="Plot for merchant ${code}">`;
+    }
 });
+
