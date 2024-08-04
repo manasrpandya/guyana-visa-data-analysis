@@ -7,19 +7,24 @@
     <style>
         body {
             font-family: Arial, sans-serif;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            margin: 0;
-            height: 100vh;
-            justify-content: center;
         }
-        #merchantSelect {
-            margin-bottom: 20px;
-            padding: 10px;
-            font-size: 16px;
+        #merchantList {
+            list-style-type: none;
+            padding: 0;
         }
-        #plotContainer img {
+        #merchantList li {
+            margin: 10px 0;
+            cursor: pointer;
+            color: blue;
+            text-decoration: underline;
+        }
+        #merchantList li:hover {
+            color: darkblue;
+        }
+        #plotContainer {
+            margin-top: 20px;
+        }
+        img {
             max-width: 100%;
             height: auto;
         }
@@ -27,9 +32,7 @@
 </head>
 <body>
     <h1>Merchant Plots</h1>
-    <select id="merchantSelect">
-        <option value="">Select a Merchant</option>
-    </select>
+    <ul id="merchantList"></ul>
     <div id="plotContainer"></div>
 
     <script src="script.js"></script>
