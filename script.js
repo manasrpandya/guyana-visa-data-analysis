@@ -121,18 +121,41 @@ document.addEventListener("DOMContentLoaded", function() {
         { code: "9311", name: "TAX PAYMENTS" },
         { code: "9399", name: "GOV'T SERV - DEFAULT" }
     ];
-
     const merchantList = document.getElementById("merchantList");
     const plotContainer = document.getElementById("plotContainer");
+    const modal = document.getElementById("myModal");
+    const btn = document.getElementById("openModal");
+    const span = document.getElementsByClassName("close")[0];
 
     merchants.forEach(merchant => {
         const listItem = document.createElement("li");
         listItem.textContent = `${merchant.code} (${merchant.name})`;
-        listItem.addEventListener("click", () => displayPlot(merchant.code));
+        listItem.addEventListener("click", () => {
+            displayPlot(merchant.code);
+            modal.style.display = "none";
+        });
         merchantList.appendChild(listItem);
     });
 
     function displayPlot(code) {
         plotContainer.innerHTML = `<img src="merchant_plots/${code}.png" alt="Plot for merchant ${code}">`;
     }
+
+    // When the user clicks the button, open the modal
+    btn.onclick = function() {
+        modal.style.display = "block";
+    }
+
+    // When the user clicks on <span> (x), close the modal
+    span.onclick = function() {
+        modal.style.display = "none";
+    }
+
+    // When the user clicks anywhere outside of the modal, close it
+    window.onclick = function(event) {
+        if (event.target == modal) {
+            modal.style.display = "none";
+        }
+    }
 });
+
