@@ -136,6 +136,7 @@ document.addEventListener("DOMContentLoaded", function() {
     // Display the plot when a merchant is selected
     merchantSelect.addEventListener("change", function() {
         const selectedCode = this.value;
+        console.log('Selected Merchant Code:', selectedCode);
         if (selectedCode) {
             plotContainer.innerHTML = `<img src="merchant_plots/${selectedCode}.png" alt="Plot for merchant ${selectedCode}">`;
         } else {
