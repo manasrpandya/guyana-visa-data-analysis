@@ -122,18 +122,51 @@ document.addEventListener("DOMContentLoaded", function() {
         { code: "9311", name: "TAX PAYMENTS" },
         { code: "9399", name: "GOV'T SERV - DEFAULT" }
     ];
+
+    const searchBox = document.getElementById("searchBox");
     const merchantList = document.getElementById("merchantList");
     const plotContainer = document.getElementById("plotContainer");
 
-    merchants.forEach(merchant => {
-        const listItem = document.createElement("li");
-        listItem.textContent = `${merchant.code} (${merchant.name})`;
-        listItem.addEventListener("click", () => displayPlot(merchant.code));
-        merchantList.appendChild(listItem);
+    // Display the merchant list when the search box is focused
+    searchBox.addEventListener("focus", () => {
+        merchantList.style.display = "block";
+        filterMerchants("");
     });
+
+    // Filter the merchant list based on search input
+    searchBox.addEventListener("input", () => {
+        const searchTerm = searchBox.value.toLowerCase();
+        filterMerchants(searchTerm);
+    });
+
+    // Hide the merchant list if clicked outside the search box or list
+    document.addEventListener("click", (event) => {
+        if (!searchBox.contains(event.target) && !merchantList.contains(event.target)) {
+            merchantList.style.display = "none";
+        }
+    });
+
+    function filterMerchants(searchTerm) {
+        merchantList.innerHTML = ""; // Clear current list
+        const filteredMerchants = merchants.filter(merchant => 
+            merchant.code.toLowerCase().includes(searchTerm) || 
+            merchant.name.toLowerCase().includes(searchTerm)
+        );
+        filteredMerchants.forEach(merchant => {
+            const listItem = document.createElement("li");
+            listItem.textContent = `${merchant.code} (${merchant.name})`;
+            listItem.addEventListener("click", () => {
+                displayPlot(merchant.code);
+                merchantList.style.display = "none"; // Hide list after selection
+                searchBox.value = ''; // Clear search box
+            });
+            merchantList.appendChild(listItem);
+        });
+    }
 
     function displayPlot(code) {
         plotContainer.innerHTML = `<img src="merchant_plots/${code}.png" alt="Plot for merchant ${code}">`;
     }
 });
+
 
