@@ -1,6 +1,6 @@
 document.addEventListener("DOMContentLoaded", function() {
     const merchants = [
-        { code: "TOTAL", name: "OVERALL MERCHANTS" },
+        { code: "0", name: "OVERALL MERCHANTS" },
         { code: "1", name: "ALL AIRLINES" },
         { code: "2", name: "LODGING" },
         { code: "3", name: "AUTO RENTAL" },
