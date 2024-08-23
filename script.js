@@ -122,15 +122,14 @@ document.addEventListener("DOMContentLoaded", function() {
         { code: "9311", name: "TAX PAYMENTS" },
         { code: "9399", name: "GOV'T SERV - DEFAULT" }
     ];
-
     const searchBox = document.getElementById("searchBox");
     const merchantList = document.getElementById("merchantList");
     const plotContainer = document.getElementById("plotContainer");
 
-    // Display the merchant list when the search box is focused
+    // Show all merchants when the search box is focused
     searchBox.addEventListener("focus", () => {
         merchantList.style.display = "block";
-        filterMerchants("");
+        filterMerchants(""); // Show all merchants
     });
 
     // Filter the merchant list based on search input
@@ -146,24 +145,30 @@ document.addEventListener("DOMContentLoaded", function() {
         }
     });
 
+    // Populate the merchant list based on the search term
     function filterMerchants(searchTerm) {
         merchantList.innerHTML = ""; // Clear current list
         const filteredMerchants = merchants.filter(merchant => 
             merchant.code.toLowerCase().includes(searchTerm) || 
             merchant.name.toLowerCase().includes(searchTerm)
         );
-        filteredMerchants.forEach(merchant => {
-            const listItem = document.createElement("li");
-            listItem.textContent = `${merchant.code} (${merchant.name})`;
-            listItem.addEventListener("click", () => {
-                displayPlot(merchant.code);
-                merchantList.style.display = "none"; // Hide list after selection
-                searchBox.value = ''; // Clear search box
+        if (filteredMerchants.length > 0) {
+            filteredMerchants.forEach(merchant => {
+                const listItem = document.createElement("li");
+                listItem.textContent = `${merchant.code} (${merchant.name})`;
+                listItem.addEventListener("click", () => {
+                    displayPlot(merchant.code);
+                    merchantList.style.display = "none"; // Hide list after selection
+                    searchBox.value = merchant.name; // Set search box to selected merchant
+                });
+                merchantList.appendChild(listItem);
             });
-            merchantList.appendChild(listItem);
-        });
+        } else {
+            merchantList.innerHTML = `<li>No merchants found</li>`;
+        }
     }
 
+    // Display the plot corresponding to the selected merchant code
     function displayPlot(code) {
         plotContainer.innerHTML = `<img src="merchant_plots/${code}.png" alt="Plot for merchant ${code}">`;
     }
