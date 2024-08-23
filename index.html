@@ -8,18 +8,41 @@
         body {
             font-family: Arial, sans-serif;
         }
+        #searchContainer {
+            position: relative;
+            margin-bottom: 20px;
+        }
+        #searchBox {
+            width: 100%;
+            padding: 10px;
+            font-size: 16px;
+            box-sizing: border-box;
+        }
         #merchantList {
             list-style-type: none;
             padding: 0;
+            margin: 0;
+            max-height: 200px;
+            overflow-y: auto;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            display: none;
+            position: absolute;
+            width: 100%;
+            background-color: white;
+            z-index: 1;
         }
         #merchantList li {
-            margin: 10px 0;
+            padding: 10px;
             cursor: pointer;
-            color: blue;
-            text-decoration: underline;
+            border-bottom: 1px solid #ccc;
+            color: black;
+        }
+        #merchantList li:last-child {
+            border-bottom: none;
         }
         #merchantList li:hover {
-            color: darkblue;
+            background-color: #f0f0f0;
         }
         #plotContainer {
             margin-top: 20px;
@@ -32,7 +55,10 @@
 </head>
 <body>
     <h1>Merchant Plots</h1>
-    <ul id="merchantList"></ul>
+    <div id="searchContainer">
+        <input type="text" id="searchBox" placeholder="Search for a merchant by code or name...">
+        <ul id="merchantList"></ul>
+    </div>
     <div id="plotContainer"></div>
 
     <script src="script.js"></script>
