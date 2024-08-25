@@ -179,6 +179,7 @@ document.addEventListener("DOMContentLoaded", function() {
             ]
         }
     };
+
     const searchBoxSegment = document.getElementById("searchBoxSegment");
     const segmentList = document.getElementById("segmentList");
     const searchBoxCategory = document.getElementById("searchBoxCategory");
@@ -205,7 +206,7 @@ document.addEventListener("DOMContentLoaded", function() {
     });
 
     function filterSegments(searchTerm) {
-        segmentList.innerHTML = ""; 
+        segmentList.innerHTML = "";
         const filteredSegments = Object.keys(segments).filter(segment =>
             segment.toLowerCase().includes(searchTerm)
         );
@@ -215,8 +216,8 @@ document.addEventListener("DOMContentLoaded", function() {
                 listItem.textContent = segment;
                 listItem.addEventListener("click", () => {
                     displayCategories(segment);
-                    segmentList.style.display = "none"; 
-                    searchBoxSegment.value = segment; 
+                    segmentList.style.display = "none";
+                    searchBoxSegment.value = segment;
                 });
                 segmentList.appendChild(listItem);
             });
@@ -228,8 +229,8 @@ document.addEventListener("DOMContentLoaded", function() {
     function displayCategories(segment) {
         searchBoxCategory.style.display = "block";
         categoryList.style.display = "block";
-        searchBoxCategory.value = ""; 
-        filterCategories(segment, ""); 
+        searchBoxCategory.value = "";
+        filterCategories(segment, "");
 
         searchBoxCategory.addEventListener("input", () => {
             const searchTerm = searchBoxCategory.value.toLowerCase();
@@ -238,7 +239,7 @@ document.addEventListener("DOMContentLoaded", function() {
     }
 
     function filterCategories(segment, searchTerm) {
-        categoryList.innerHTML = ""; 
+        categoryList.innerHTML = "";
         const filteredCategories = segments[segment].categories.filter(category =>
             category.code.toLowerCase().includes(searchTerm) || 
             category.name.toLowerCase().includes(searchTerm)
@@ -248,8 +249,8 @@ document.addEventListener("DOMContentLoaded", function() {
             overallListItem.textContent = `OVERALL ${segment}`;
             overallListItem.addEventListener("click", () => {
                 displaySegmentOptions(segment);
-                categoryList.style.display = "none"; 
-                searchBoxCategory.value = `OVERALL ${segment}`; 
+                categoryList.style.display = "none";
+                searchBoxCategory.value = `OVERALL ${segment}`;
             });
             categoryList.appendChild(overallListItem);
 
@@ -258,8 +259,8 @@ document.addEventListener("DOMContentLoaded", function() {
                 listItem.textContent = `${category.code} (${category.name})`;
                 listItem.addEventListener("click", () => {
                     displayCategoryOptions(segment, category.code);
-                    categoryList.style.display = "none"; 
-                    searchBoxCategory.value = category.name; 
+                    categoryList.style.display = "none";
+                    searchBoxCategory.value = category.name;
                 });
                 categoryList.appendChild(listItem);
             });
