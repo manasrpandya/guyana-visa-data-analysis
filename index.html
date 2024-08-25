@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Merchant Plots</title>
+    <title>Merchant and Segment Analysis</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -12,13 +12,14 @@
             position: relative;
             margin-bottom: 20px;
         }
-        #searchBox {
+        #searchBoxSegment, #searchBoxCategory {
             width: 100%;
             padding: 10px;
             font-size: 16px;
             box-sizing: border-box;
+            margin-bottom: 10px;
         }
-        #merchantList {
+        #segmentList, #categoryList {
             list-style-type: none;
             padding: 0;
             margin: 0;
@@ -32,16 +33,16 @@
             background-color: white;
             z-index: 1;
         }
-        #merchantList li {
+        #segmentList li, #categoryList li {
             padding: 10px;
             cursor: pointer;
             border-bottom: 1px solid #ccc;
             color: black;
         }
-        #merchantList li:last-child {
+        #segmentList li:last-child, #categoryList li:last-child {
             border-bottom: none;
         }
-        #merchantList li:hover {
+        #segmentList li:hover, #categoryList li:hover {
             background-color: #f0f0f0;
         }
         #plotContainer {
@@ -54,10 +55,13 @@
     </style>
 </head>
 <body>
-    <h1>Merchant Plots</h1>
+    <h1>Merchant and Segment Analysis</h1>
     <div id="searchContainer">
-        <input type="text" id="searchBox" placeholder="Search for a merchant by code or name...">
-        <ul id="merchantList"></ul>
+        <input type="text" id="searchBoxSegment" placeholder="Search for a segment...">
+        <ul id="segmentList"></ul>
+        
+        <input type="text" id="searchBoxCategory" placeholder="Search for a category within the segment..." style="display:none;">
+        <ul id="categoryList" style="display:none;"></ul>
     </div>
     <div id="plotContainer"></div>
 
