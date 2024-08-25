@@ -179,7 +179,6 @@ document.addEventListener("DOMContentLoaded", function() {
             ]
         }
     };
-
     const searchBoxSegment = document.getElementById("searchBoxSegment");
     const segmentList = document.getElementById("segmentList");
     const searchBoxCategory = document.getElementById("searchBoxCategory");
@@ -198,6 +197,11 @@ document.addEventListener("DOMContentLoaded", function() {
         filterSegments(searchTerm);
     });
 
+    // Show all categories when the search box is focused
+    searchBoxCategory.addEventListener("focus", () => {
+        categoryList.style.display = "block";
+    });
+
     // Hide the segment or category list if clicked outside
     document.addEventListener("click", (event) => {
         if (!searchBoxSegment.contains(event.target) && !segmentList.contains(event.target)) {
@@ -210,7 +214,7 @@ document.addEventListener("DOMContentLoaded", function() {
 
     // Populate the segment list based on the search term
     function filterSegments(searchTerm) {
-        segmentList.innerHTML = "";
+        segmentList.innerHTML = ""; // Clear current list
         const filteredSegments = Object.keys(segments).filter(segment =>
             segment.toLowerCase().includes(searchTerm)
         );
@@ -228,6 +232,7 @@ document.addEventListener("DOMContentLoaded", function() {
         } else {
             segmentList.innerHTML = `<li>No segments found</li>`;
         }
+        segmentList.style.display = "block"; // Ensure the list is visible
     }
 
     // Display categories for the selected segment
@@ -245,7 +250,7 @@ document.addEventListener("DOMContentLoaded", function() {
 
     // Populate the category list based on the search term
     function filterCategories(segment, searchTerm) {
-        categoryList.innerHTML = "";
+        categoryList.innerHTML = ""; // Clear current list
         const filteredCategories = segments[segment].categories.filter(category =>
             category.code.toLowerCase().includes(searchTerm) || 
             category.name.toLowerCase().includes(searchTerm)
@@ -273,6 +278,7 @@ document.addEventListener("DOMContentLoaded", function() {
         } else {
             categoryList.innerHTML = `<li>No categories found</li>`;
         }
+        categoryList.style.display = "block"; // Ensure the list is visible
     }
 
     function displaySegmentOptions(segment) {
@@ -322,3 +328,4 @@ document.addEventListener("DOMContentLoaded", function() {
         plotContainer.innerHTML = plotHtml + plotContainer.innerHTML;
     }
 });
+
