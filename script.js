@@ -212,6 +212,23 @@ document.addEventListener("DOMContentLoaded", function() {
         }
     });
 
+    // Stop propagation of clicks inside the search boxes or lists
+    searchBoxSegment.addEventListener("click", (event) => {
+        event.stopPropagation();
+    });
+
+    searchBoxCategory.addEventListener("click", (event) => {
+        event.stopPropagation();
+    });
+
+    segmentList.addEventListener("click", (event) => {
+        event.stopPropagation();
+    });
+
+    categoryList.addEventListener("click", (event) => {
+        event.stopPropagation();
+    });
+
     // Populate the segment list based on the search term
     function filterSegments(searchTerm) {
         segmentList.innerHTML = ""; // Clear current list
@@ -328,4 +345,5 @@ document.addEventListener("DOMContentLoaded", function() {
         plotContainer.innerHTML = plotHtml + plotContainer.innerHTML;
     }
 });
+
 
