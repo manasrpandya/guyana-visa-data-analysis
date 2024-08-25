@@ -303,5 +303,3 @@ document.addEventListener("DOMContentLoaded", function() {
 });
 
 
-    // The segments object now contains all the data from the provided CSV file.
-});
