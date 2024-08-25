@@ -337,7 +337,7 @@ const segments = {
                 <button onclick="displaySegmentDetail('${segment}', 'plot_transaction_amount')">Monthly Data - Transaction Amount</button>
                 <button onclick="displaySegmentDetail('${segment}', 'plot_ticket_size')">Monthly Data - Ticket Size</button>
                 <button onclick="displaySegmentDetail('${segment}', 'plot_merchant_activity')">Monthly Data - Merchant Activity</button>
-                <button onclick="displaySegmentDetail('${segment}', 'plot_heatmap')">Monthly Data - Heatmap</button>
+                <button onclick="displaySegmentDetail('${segment}', 'plot_heatmap')">Monthly Data - Heatmap of Transaction count/Merchant Count Ratio</button>
             </div>
             <div class="plot-image" id="segmentPlotImage"></div>
         </div>`;
@@ -364,7 +364,7 @@ const segments = {
                 <button onclick="displayCategoryDetail('${segment}', '${code}', 'average_ticket_size')">Monthly Data - Average Ticket Size</button>
                 <button onclick="displayCategoryDetail('${segment}', '${code}', 'merchant_ticket_size')">Monthly Data - Merchant Ticket Size</button>
                 <button onclick="displayCategoryDetail('${segment}', '${code}', 'merchant_counts')">Monthly Data - Merchant Counts</button>
-                <button onclick="displayCategoryDetail('${segment}', '${code}', 'heatmap')">Monthly Data - Heatmap</button>
+                <button onclick="displayCategoryDetail('${segment}', '${code}', 'heatmap')">Monthly Data - Heatmap of Transaction count/Merchant Count Ratio</button>
             </div>
             <div class="plot-image" id="categoryPlotImage"></div>
         </div>`;
