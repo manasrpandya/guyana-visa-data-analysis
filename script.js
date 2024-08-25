@@ -299,51 +299,55 @@ document.addEventListener("DOMContentLoaded", function() {
     }
 
     function displaySegmentOptions(segment) {
-        let plotHtml = `<h2>Overall Segment: ${segment}</h2>`;
+        let plotHtml = `<div class="plot-and-buttons"><h2>Overall Segment: ${segment}</h2>`;
         plotHtml += `
-            <button onclick="displaySegmentDetail('${segment}', 'print')">Yearly Data (Overall)</button>
-            <button onclick="displaySegmentDetail('${segment}', 'plot_transaction_count')">Monthly Data - Transaction Count</button>
-            <button onclick="displaySegmentDetail('${segment}', 'plot_transaction_amount')">Monthly Data - Transaction Amount</button>
-            <button onclick="displaySegmentDetail('${segment}', 'plot_ticket_size')">Monthly Data - Ticket Size</button>
-            <button onclick="displaySegmentDetail('${segment}', 'plot_merchant_activity')">Monthly Data - Merchant Activity</button>
-            <button onclick="displaySegmentDetail('${segment}', 'plot_heatmap')">Monthly Data - Heatmap</button>
-        `;
+            <div class="buttons">
+                <button onclick="displaySegmentDetail('${segment}', 'print')">Yearly Data (Overall)</button>
+                <button onclick="displaySegmentDetail('${segment}', 'plot_transaction_count')">Monthly Data - Transaction Count</button>
+                <button onclick="displaySegmentDetail('${segment}', 'plot_transaction_amount')">Monthly Data - Transaction Amount</button>
+                <button onclick="displaySegmentDetail('${segment}', 'plot_ticket_size')">Monthly Data - Ticket Size</button>
+                <button onclick="displaySegmentDetail('${segment}', 'plot_merchant_activity')">Monthly Data - Merchant Activity</button>
+                <button onclick="displaySegmentDetail('${segment}', 'plot_heatmap')">Monthly Data - Heatmap</button>
+            </div>
+            <div class="plot-image" id="segmentPlotImage"></div>
+        </div>`;
         plotContainer.innerHTML = plotHtml;
     }
 
     window.displaySegmentDetail = function(segment, type) {
+        const plotImageDiv = document.getElementById('segmentPlotImage');
         let plotHtml = `<h2>Overall Segment: ${segment}</h2>`;
         if (type === 'print') {
-            plotHtml += `<img src="new_merchant_segment_plots/${segment}_print_statement.png" alt="Yearly Data">`;
+            plotImageDiv.innerHTML = `<img src="new_merchant_segment_plots/${segment}_print_statement.png" alt="Yearly Data">`;
         } else {
-            plotHtml += `<img src="new_merchant_segment_plots/${segment}_${type}.png" alt="${type.replace('_', ' ')}">`;
+            plotImageDiv.innerHTML = `<img src="new_merchant_segment_plots/${segment}_${type}.png" alt="${type.replace('_', ' ')}">`;
         }
-        plotContainer.innerHTML = plotHtml + plotContainer.innerHTML;
     }
 
     function displayCategoryOptions(segment, code) {
-        let plotHtml = `<h2>${segment} - ${code}</h2>`;
+        let plotHtml = `<div class="plot-and-buttons"><h2>${segment} - ${code}</h2>`;
         plotHtml += `
-            <button onclick="displayCategoryDetail('${segment}', '${code}', 'print')">Yearly Data (Overall)</button>
-            <button onclick="displayCategoryDetail('${segment}', '${code}', 'transaction_count')">Monthly Data - Transaction Count</button>
-            <button onclick="displayCategoryDetail('${segment}', '${code}', 'transaction_amount')">Monthly Data - Transaction Amount</button>
-            <button onclick="displayCategoryDetail('${segment}', '${code}', 'average_ticket_size')">Monthly Data - Average Ticket Size</button>
-            <button onclick="displayCategoryDetail('${segment}', '${code}', 'merchant_ticket_size')">Monthly Data - Merchant Ticket Size</button>
-            <button onclick="displayCategoryDetail('${segment}', '${code}', 'merchant_counts')">Monthly Data - Merchant Counts</button>
-            <button onclick="displayCategoryDetail('${segment}', '${code}', 'heatmap')">Monthly Data - Heatmap</button>
-        `;
+            <div class="buttons">
+                <button onclick="displayCategoryDetail('${segment}', '${code}', 'print')">Yearly Data (Overall)</button>
+                <button onclick="displayCategoryDetail('${segment}', '${code}', 'transaction_count')">Monthly Data - Transaction Count</button>
+                <button onclick="displayCategoryDetail('${segment}', '${code}', 'transaction_amount')">Monthly Data - Transaction Amount</button>
+                <button onclick="displayCategoryDetail('${segment}', '${code}', 'average_ticket_size')">Monthly Data - Average Ticket Size</button>
+                <button onclick="displayCategoryDetail('${segment}', '${code}', 'merchant_ticket_size')">Monthly Data - Merchant Ticket Size</button>
+                <button onclick="displayCategoryDetail('${segment}', '${code}', 'merchant_counts')">Monthly Data - Merchant Counts</button>
+                <button onclick="displayCategoryDetail('${segment}', '${code}', 'heatmap')">Monthly Data - Heatmap</button>
+            </div>
+            <div class="plot-image" id="categoryPlotImage"></div>
+        </div>`;
         plotContainer.innerHTML = plotHtml;
     }
 
     window.displayCategoryDetail = function(segment, code, type) {
+        const plotImageDiv = document.getElementById('categoryPlotImage');
         let plotHtml = `<h2>${segment} - ${code}</h2>`;
         if (type === 'print') {
-            plotHtml += `<img src="new_merchant_category_plots/${code}_print_statement.png" alt="Yearly Data">`;
+            plotImageDiv.innerHTML = `<img src="new_merchant_category_plots/${code}_print_statement.png" alt="Yearly Data">`;
         } else {
-            plotHtml += `<img src="new_merchant_category_plots/${code}_${type}.png" alt="${type.replace('_', ' ')}">`;
+            plotImageDiv.innerHTML = `<img src="new_merchant_category_plots/${code}_${type}.png" alt="${type.replace('_', ' ')}">`;
         }
-        plotContainer.innerHTML = plotHtml + plotContainer.innerHTML;
     }
 });
-
-
