@@ -186,16 +186,19 @@ document.addEventListener("DOMContentLoaded", function() {
     const categoryList = document.getElementById("categoryList");
     const plotContainer = document.getElementById("plotContainer");
 
+    // Show all segments when the search box is focused
     searchBoxSegment.addEventListener("focus", () => {
         segmentList.style.display = "block";
         filterSegments(""); // Show all segments
     });
 
+    // Filter the segment list based on search input
     searchBoxSegment.addEventListener("input", () => {
         const searchTerm = searchBoxSegment.value.toLowerCase();
         filterSegments(searchTerm);
     });
 
+    // Hide the segment or category list if clicked outside
     document.addEventListener("click", (event) => {
         if (!searchBoxSegment.contains(event.target) && !segmentList.contains(event.target)) {
             segmentList.style.display = "none";
@@ -205,6 +208,7 @@ document.addEventListener("DOMContentLoaded", function() {
         }
     });
 
+    // Populate the segment list based on the search term
     function filterSegments(searchTerm) {
         segmentList.innerHTML = "";
         const filteredSegments = Object.keys(segments).filter(segment =>
@@ -216,8 +220,8 @@ document.addEventListener("DOMContentLoaded", function() {
                 listItem.textContent = segment;
                 listItem.addEventListener("click", () => {
                     displayCategories(segment);
-                    segmentList.style.display = "none";
-                    searchBoxSegment.value = segment;
+                    segmentList.style.display = "none"; // Hide list after selection
+                    searchBoxSegment.value = segment; // Set search box to selected segment
                 });
                 segmentList.appendChild(listItem);
             });
@@ -226,11 +230,12 @@ document.addEventListener("DOMContentLoaded", function() {
         }
     }
 
+    // Display categories for the selected segment
     function displayCategories(segment) {
         searchBoxCategory.style.display = "block";
         categoryList.style.display = "block";
-        searchBoxCategory.value = "";
-        filterCategories(segment, "");
+        searchBoxCategory.value = ""; // Clear the category search box
+        filterCategories(segment, ""); // Show all categories in the segment
 
         searchBoxCategory.addEventListener("input", () => {
             const searchTerm = searchBoxCategory.value.toLowerCase();
@@ -238,6 +243,7 @@ document.addEventListener("DOMContentLoaded", function() {
         });
     }
 
+    // Populate the category list based on the search term
     function filterCategories(segment, searchTerm) {
         categoryList.innerHTML = "";
         const filteredCategories = segments[segment].categories.filter(category =>
