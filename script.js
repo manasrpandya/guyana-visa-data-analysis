@@ -179,35 +179,33 @@ document.addEventListener("DOMContentLoaded", function() {
             ]
         }
     };
-
     const searchBoxSegment = document.getElementById("searchBoxSegment");
     const segmentList = document.getElementById("segmentList");
     const searchBoxCategory = document.getElementById("searchBoxCategory");
     const categoryList = document.getElementById("categoryList");
     const plotContainer = document.getElementById("plotContainer");
 
-    // Show all segments when the search box is focused
     searchBoxSegment.addEventListener("focus", () => {
         segmentList.style.display = "block";
         filterSegments(""); // Show all segments
     });
 
-    // Filter the segment list based on search input
     searchBoxSegment.addEventListener("input", () => {
         const searchTerm = searchBoxSegment.value.toLowerCase();
         filterSegments(searchTerm);
     });
 
-    // Hide the segment list if clicked outside
     document.addEventListener("click", (event) => {
         if (!searchBoxSegment.contains(event.target) && !segmentList.contains(event.target)) {
             segmentList.style.display = "none";
         }
+        if (!searchBoxCategory.contains(event.target) && !categoryList.contains(event.target)) {
+            categoryList.style.display = "none";
+        }
     });
 
-    // Populate the segment list based on the search term
     function filterSegments(searchTerm) {
-        segmentList.innerHTML = ""; // Clear current list
+        segmentList.innerHTML = ""; 
         const filteredSegments = Object.keys(segments).filter(segment =>
             segment.toLowerCase().includes(searchTerm)
         );
@@ -217,8 +215,8 @@ document.addEventListener("DOMContentLoaded", function() {
                 listItem.textContent = segment;
                 listItem.addEventListener("click", () => {
                     displayCategories(segment);
-                    segmentList.style.display = "none"; // Hide list after selection
-                    searchBoxSegment.value = segment; // Set search box to selected segment
+                    segmentList.style.display = "none"; 
+                    searchBoxSegment.value = segment; 
                 });
                 segmentList.appendChild(listItem);
             });
@@ -227,12 +225,11 @@ document.addEventListener("DOMContentLoaded", function() {
         }
     }
 
-    // Display categories for the selected segment
     function displayCategories(segment) {
         searchBoxCategory.style.display = "block";
         categoryList.style.display = "block";
-        searchBoxCategory.value = ""; // Clear the category search box
-        filterCategories(segment, ""); // Show all categories in the segment
+        searchBoxCategory.value = ""; 
+        filterCategories(segment, ""); 
 
         searchBoxCategory.addEventListener("input", () => {
             const searchTerm = searchBoxCategory.value.toLowerCase();
@@ -240,9 +237,8 @@ document.addEventListener("DOMContentLoaded", function() {
         });
     }
 
-    // Filter the category list based on search input
     function filterCategories(segment, searchTerm) {
-        categoryList.innerHTML = ""; // Clear current list
+        categoryList.innerHTML = ""; 
         const filteredCategories = segments[segment].categories.filter(category =>
             category.code.toLowerCase().includes(searchTerm) || 
             category.name.toLowerCase().includes(searchTerm)
@@ -251,9 +247,9 @@ document.addEventListener("DOMContentLoaded", function() {
             const overallListItem = document.createElement("li");
             overallListItem.textContent = `OVERALL ${segment}`;
             overallListItem.addEventListener("click", () => {
-                displayPlot(segment, "OVERALL");
-                categoryList.style.display = "none"; // Hide list after selection
-                searchBoxCategory.value = `OVERALL ${segment}`; // Set search box to selected category
+                displaySegmentOptions(segment);
+                categoryList.style.display = "none"; 
+                searchBoxCategory.value = `OVERALL ${segment}`; 
             });
             categoryList.appendChild(overallListItem);
 
@@ -261,9 +257,9 @@ document.addEventListener("DOMContentLoaded", function() {
                 const listItem = document.createElement("li");
                 listItem.textContent = `${category.code} (${category.name})`;
                 listItem.addEventListener("click", () => {
-                    displayPlot(segment, category.code);
-                    categoryList.style.display = "none"; // Hide list after selection
-                    searchBoxCategory.value = category.name; // Set search box to selected category
+                    displayCategoryOptions(segment, category.code);
+                    categoryList.style.display = "none"; 
+                    searchBoxCategory.value = category.name; 
                 });
                 categoryList.appendChild(listItem);
             });
@@ -272,34 +268,50 @@ document.addEventListener("DOMContentLoaded", function() {
         }
     }
 
-    // Display the plot or print corresponding to the selected category or segment
-    function displayPlot(segment, code) {
-        let plotHtml = `<h2>${segment} - ${code}</h2>`;
-        if (code === "OVERALL") {
-            plotHtml += `<img src="new_merchant_segment_plots/${segment}_print_statement.png" alt="Overall Segment Analysis">`;
-        } else {
-            plotHtml += `
-                <button onclick="displayDetail('${segment}', '${code}', 'print')">View Overall Data</button>
-                <button onclick="displayDetail('${segment}', '${code}', 'plot')">View Specific Plots</button>`;
-        }
+    function displaySegmentOptions(segment) {
+        let plotHtml = `<h2>Overall Segment: ${segment}</h2>`;
+        plotHtml += `
+            <button onclick="displaySegmentDetail('${segment}', 'print')">Yearly Data (Overall)</button>
+            <button onclick="displaySegmentDetail('${segment}', 'plot_transaction_count')">Monthly Data - Transaction Count</button>
+            <button onclick="displaySegmentDetail('${segment}', 'plot_transaction_amount')">Monthly Data - Transaction Amount</button>
+            <button onclick="displaySegmentDetail('${segment}', 'plot_ticket_size')">Monthly Data - Ticket Size</button>
+            <button onclick="displaySegmentDetail('${segment}', 'plot_merchant_activity')">Monthly Data - Merchant Activity</button>
+            <button onclick="displaySegmentDetail('${segment}', 'plot_heatmap')">Monthly Data - Heatmap</button>
+        `;
         plotContainer.innerHTML = plotHtml;
     }
 
-    // Display detailed options based on user selection
-    window.displayDetail = function(segment, code, type) {
-        if (type === "print") {
-            plotContainer.innerHTML = `<img src="new_merchant_category_plots/${code}_print_statement.png" alt="Print Statement">`;
-        } else if (type === "plot") {
-            plotContainer.innerHTML = `
-                <img src="new_merchant_category_plots/${code}_transaction_count.png" alt="Transaction Count">
-                <img src="new_merchant_category_plots/${code}_transaction_amount.png" alt="Transaction Amount">
-                <img src="new_merchant_category_plots/${code}_average_ticket_size.png" alt="Average Ticket Size">
-                <img src="new_merchant_category_plots/${code}_merchant_ticket_size.png" alt="Merchant Ticket Size">
-                <img src="new_merchant_category_plots/${code}_merchant_counts.png" alt="Merchant Counts">
-                <img src="new_merchant_category_plots/${code}_heatmap.png" alt="Heatmap">
-            `;
+    window.displaySegmentDetail = function(segment, type) {
+        let plotHtml = `<h2>Overall Segment: ${segment}</h2>`;
+        if (type === 'print') {
+            plotHtml += `<img src="new_merchant_segment_plots/${segment}_print_statement.png" alt="Yearly Data">`;
+        } else {
+            plotHtml += `<img src="new_merchant_segment_plots/${segment}_${type}.png" alt="${type.replace('_', ' ')}">`;
         }
+        plotContainer.innerHTML = plotHtml + plotContainer.innerHTML;
+    }
+
+    function displayCategoryOptions(segment, code) {
+        let plotHtml = `<h2>${segment} - ${code}</h2>`;
+        plotHtml += `
+            <button onclick="displayCategoryDetail('${segment}', '${code}', 'print')">Yearly Data (Overall)</button>
+            <button onclick="displayCategoryDetail('${segment}', '${code}', 'transaction_count')">Monthly Data - Transaction Count</button>
+            <button onclick="displayCategoryDetail('${segment}', '${code}', 'transaction_amount')">Monthly Data - Transaction Amount</button>
+            <button onclick="displayCategoryDetail('${segment}', '${code}', 'average_ticket_size')">Monthly Data - Average Ticket Size</button>
+            <button onclick="displayCategoryDetail('${segment}', '${code}', 'merchant_ticket_size')">Monthly Data - Merchant Ticket Size</button>
+            <button onclick="displayCategoryDetail('${segment}', '${code}', 'merchant_counts')">Monthly Data - Merchant Counts</button>
+            <button onclick="displayCategoryDetail('${segment}', '${code}', 'heatmap')">Monthly Data - Heatmap</button>
+        `;
+        plotContainer.innerHTML = plotHtml;
+    }
+
+    window.displayCategoryDetail = function(segment, code, type) {
+        let plotHtml = `<h2>${segment} - ${code}</h2>`;
+        if (type === 'print') {
+            plotHtml += `<img src="new_merchant_category_plots/${code}_print_statement.png" alt="Yearly Data">`;
+        } else {
+            plotHtml += `<img src="new_merchant_category_plots/${code}_${type}.png" alt="${type.replace('_', ' ')}">`;
+        }
+        plotContainer.innerHTML = plotHtml + plotContainer.innerHTML;
     }
 });
-
-
