@@ -3,7 +3,7 @@ document.addEventListener("DOMContentLoaded", function() {
 const segments = {
     "overall": {
         categories: [
-            { code: "0000", name: "all categories, all segments" }
+            { code: "0000", name: "do not click on this, click the option ABOVE" }
         ]
     },
     "AIRLINES": {
