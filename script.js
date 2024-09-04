@@ -1,6 +1,11 @@
 document.addEventListener("DOMContentLoaded", function() {
     // Data structure for segments, categories, and merchant codes
 const segments = {
+    "overall": {
+        categories: [
+            { code: "0000", name: "all categories, all segments" }
+        ]
+    },
     "AIRLINES": {
         categories: [
             { code: "4511", name: "AIRLINES, AIR CARRIERS" }
