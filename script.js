@@ -1,8 +1,8 @@
 document.addEventListener("DOMContentLoaded", function() {
     // FlowCatalyst Dashboard - MMG and Visa Sections
-    const dashboardContainer = document.getElementById("dashboardContainer");
-    const visaSection = document.getElementById("visaSection");
-    const mmgSection = document.getElementById("mmgSection");
+    const dashboardContainer = document.getElementById("dashboard");
+    const visaSection = document.getElementById("searchContainer");
+    const mmgOptions = document.getElementById("mmgOptions");
     const visaPlotContainer = document.getElementById("plotContainer");
     const backButton = document.getElementById("backButton");
 
@@ -230,27 +230,30 @@ document.addEventListener("DOMContentLoaded", function() {
         dashboardContainer.style.display = "none";
         visaSection.style.display = "block";
         backButton.style.display = "block";
+        mmgOptions.style.display = "none";  // Hide MMG options
     }
 
-    function showMmgSection() {
+    function showMmgOptions() {
         dashboardContainer.style.display = "none";
-        mmgSection.style.display = "block";
+        mmgOptions.style.display = "block";
         backButton.style.display = "block";
+        visaSection.style.display = "none";  // Hide Visa section
     }
 
     // Back button functionality
     backButton.addEventListener("click", () => {
         visaSection.style.display = "none";
-        mmgSection.style.display = "none";
+        mmgOptions.style.display = "none";
+        visaPlotContainer.innerHTML = "";  // Clear plot container when going back
         dashboardContainer.style.display = "block";
         backButton.style.display = "none";
     });
 
     // Show Visa Merchants Data
-    document.getElementById("visaBtn").addEventListener("click", showVisaSection);
+    document.getElementById("visaMerchants").addEventListener("click", showVisaSection);
 
     // Show MMG Merchants Data
-    document.getElementById("mmgBtn").addEventListener("click", showMmgSection);
+    document.getElementById("mmgMerchants").addEventListener("click", showMmgOptions);
 
     // Visa Merchants Data Analysis
     searchBoxSegment.addEventListener("focus", () => {
@@ -400,15 +403,18 @@ document.addEventListener("DOMContentLoaded", function() {
     document.getElementById("mmgMapView").addEventListener("click", () => {
         window.location.href = "mmg_map.html";
     });
+
     document.getElementById("mmgPlotView").addEventListener("click", () => {
-    visaPlotContainer.innerHTML = `
-        <h2>MMG Merchants Data - State and City Views</h2>
-        <div class="plot-image">
-            <img src="mmg_state_data.png" alt="MMG State Data">
-        </div>
-        <div class="plot-image">
-            <img src="mmg_city_data.png" alt="MMG City Data">
-        </div>
-    `;
+        visaPlotContainer.innerHTML = `
+            <h2>MMG Merchants Data - State and City Views</h2>
+            <div class="plot-image">
+                <img src="mmg_state_data.png" alt="MMG State Data">
+            </div>
+            <div class="plot-image">
+                <img src="mmg_city_data.png" alt="MMG City Data">
+            </div>
+        `;
+    });
 });
+
 
