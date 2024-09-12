@@ -5,6 +5,41 @@ document.addEventListener("DOMContentLoaded", function() {
     const mmgOptions = document.getElementById("mmgOptions");
     const visaPlotContainer = document.getElementById("plotContainer");
     const backButton = document.getElementById("backButton");
+
+    // Function to show Visa Section and hide others
+    function showVisaSection() {
+        dashboardContainer.style.display = "none";  // Hide dashboard
+        visaSection.style.display = "block";        // Show Visa analysis section
+        backButton.style.display = "block";         // Show back button
+        mmgOptions.style.display = "none";          // Hide MMG options (if they were open)
+        visaPlotContainer.innerHTML = "";           // Clear previous plots
+    }
+
+    // Function to show MMG Section and hide others
+    function showMmgOptions() {
+        dashboardContainer.style.display = "none";  // Hide dashboard
+        mmgOptions.style.display = "block";         // Show MMG options
+        backButton.style.display = "block";         // Show back button
+        visaSection.style.display = "none";         // Hide Visa analysis section
+        visaPlotContainer.innerHTML = "";           // Clear previous plots
+    }
+
+    // Back button functionality to return to the dashboard
+    backButton.addEventListener("click", () => {
+        visaSection.style.display = "none";         // Hide Visa analysis section
+        mmgOptions.style.display = "none";          // Hide MMG options
+        visaPlotContainer.innerHTML = "";           // Clear plot container
+        dashboardContainer.style.display = "block"; // Show dashboard
+        backButton.style.display = "none";          // Hide back button
+    });
+
+    // Show Visa Merchants Data when Visa button is clicked
+    document.getElementById("visaMerchants").addEventListener("click", showVisaSection);
+
+    // Show MMG Merchants Data when MMG button is clicked
+    document.getElementById("mmgMerchants").addEventListener("click", showMmgOptions);
+});
+
     const segments = {
     "overall": {
         categories: [
@@ -218,62 +253,53 @@ document.addEventListener("DOMContentLoaded", function() {
         ]
     }
 };
-     
-    // Elements for Visa Data
+     // Visa Merchants Data Functions
+
+    const segments = {
+        "overall": {
+            categories: [
+                { code: "0000", name: "do not click on this, click the option ABOVE" }
+            ]
+        },
+        "AIRLINES": {
+            categories: [
+                { code: "4511", name: "AIRLINES, AIR CARRIERS" }
+            ]
+        },
+        "VEHICLE RENTAL": {
+            categories: [
+                { code: "3355", name: "SIXT CAR RENTAL" },
+                { code: "7512", name: "AUTOMOBILE RENTAL AGENCY" },
+                { code: "7519", name: "MOTOR HOME/RV RENTALS" }
+            ]
+        }
+        // Add more segments and categories here...
+    };
+    
+    // Handle focus events on search input for Visa data
     const searchBoxSegment = document.getElementById("searchBoxSegment");
     const segmentList = document.getElementById("segmentList");
     const searchBoxCategory = document.getElementById("searchBoxCategory");
     const categoryList = document.getElementById("categoryList");
-
-    // Function to show Visa Section and hide others
-    function showVisaSection() {
-        dashboardContainer.style.display = "none";  // Hide dashboard
-        visaSection.style.display = "block";        // Show Visa analysis section
-        backButton.style.display = "block";         // Show back button
-        mmgOptions.style.display = "none";          // Hide MMG options (if they were open)
-    }
-
-    // Function to show MMG Section and hide others
-    function showMmgOptions() {
-        dashboardContainer.style.display = "none";  // Hide dashboard
-        mmgOptions.style.display = "block";         // Show MMG options
-        backButton.style.display = "block";         // Show back button
-        visaSection.style.display = "none";         // Hide Visa analysis section
-    }
-
-    // Back button functionality to return to the dashboard
-    backButton.addEventListener("click", () => {
-        visaSection.style.display = "none";         // Hide Visa analysis section
-        mmgOptions.style.display = "none";          // Hide MMG options
-        visaPlotContainer.innerHTML = "";           // Clear plot container
-        dashboardContainer.style.display = "block"; // Show dashboard
-        backButton.style.display = "none";          // Hide back button
-    });
-
-    // Show Visa Merchants Data when Visa button is clicked
-    document.getElementById("visaMerchants").addEventListener("click", showVisaSection);
-
-    // Show MMG Merchants Data when MMG button is clicked
-    document.getElementById("mmgMerchants").addEventListener("click", showMmgOptions);
-});
-
-    // Visa Data Functions
-// Visa Merchants Data Analysis
+    
+    // Show segment list when segment search box is focused
     searchBoxSegment.addEventListener("focus", () => {
         segmentList.style.display = "block";
         filterSegments("");  // Show all segments initially
     });
-
+    
+    // Filter segment list based on input
     searchBoxSegment.addEventListener("input", () => {
         const searchTerm = searchBoxSegment.value.toLowerCase();
-        filterSegments(searchTerm);  // Filter based on search term
+        filterSegments(searchTerm);  // Filter segments based on search term
     });
-
+    
+    // Show categories when category search box is focused
     searchBoxCategory.addEventListener("focus", () => {
-        categoryList.style.display = "block";  // Show category list when focused
+        categoryList.style.display = "block";
     });
-
-    // Hide the lists if clicked outside the search box
+    
+    // Hide segment or category list if clicking outside of them
     document.addEventListener("click", (event) => {
         if (!searchBoxSegment.contains(event.target) && !segmentList.contains(event.target)) {
             segmentList.style.display = "none";
@@ -282,16 +308,16 @@ document.addEventListener("DOMContentLoaded", function() {
             categoryList.style.display = "none";
         }
     });
-
+    
     searchBoxSegment.addEventListener("click", (event) => {
         event.stopPropagation();  // Prevent the list from hiding when clicking inside the search box
     });
-
+    
     searchBoxCategory.addEventListener("click", (event) => {
         event.stopPropagation();  // Prevent the list from hiding when clicking inside the category box
     });
-
-    // Function to filter segments and display them in the list
+    
+    // Function to filter and display segments in the list
     function filterSegments(searchTerm) {
         segmentList.innerHTML = "";  // Clear the current list
         const filteredSegments = Object.keys(segments).filter(segment => 
@@ -313,23 +339,23 @@ document.addEventListener("DOMContentLoaded", function() {
         }
         segmentList.style.display = "block";  // Ensure the list is visible
     }
-
+    
     // Function to display categories for the selected segment
     function displayCategories(segment) {
         searchBoxCategory.style.display = "block";  // Show category input box
         categoryList.style.display = "block";       // Show the category list
         searchBoxCategory.value = "";               // Clear the category search box
         filterCategories(segment, "");              // Show all categories for the selected segment
-
+    
         searchBoxCategory.addEventListener("input", () => {
             const searchTerm = searchBoxCategory.value.toLowerCase();
             filterCategories(segment, searchTerm);  // Filter categories based on input
         });
     }
-
-    // Function to filter categories and display them in the list
+    
+    // Function to filter and display categories for the selected segment
     function filterCategories(segment, searchTerm) {
-        categoryList.innerHTML = "";  // Clear current list
+        categoryList.innerHTML = "";  // Clear the current list
         const filteredCategories = segments[segment].categories.filter(category =>
             category.code.toLowerCase().includes(searchTerm) || 
             category.name.toLowerCase().includes(searchTerm)
@@ -343,7 +369,7 @@ document.addEventListener("DOMContentLoaded", function() {
                 searchBoxCategory.value = `OVERALL ${segment}`;  // Set the search box to "OVERALL"
             });
             categoryList.appendChild(overallListItem);
-
+    
             filteredCategories.forEach(category => {
                 const listItem = document.createElement("li");
                 listItem.textContent = `${category.code} (${category.name})`;
@@ -359,24 +385,59 @@ document.addEventListener("DOMContentLoaded", function() {
         }
         categoryList.style.display = "block";  // Ensure the list is visible
     }
-
-    // MMG Merchants Data - Show map or plot view
-    document.getElementById("mmgMapView").addEventListener("click", () => {
-        window.location.href = "mmg_map.html";  // Redirect to the MMG map view
-    });
-
-    document.getElementById("mmgPlotView").addEventListener("click", () => {
-        visaPlotContainer.innerHTML = `
-            <h2>MMG Merchants Data - State and City Views</h2>
-            <div class="plot-image">
-                <img src="mmg_state_data.png" alt="MMG State Data">
+    
+    // Function to display options for the selected segment
+    function displaySegmentOptions(segment) {
+        let plotHtml = `<div class="plot-and-buttons"><h2>Overall Segment: ${segment}</h2>`;
+        plotHtml += `
+            <div class="buttons">
+                <button onclick="displaySegmentDetail('${segment}', 'print_statement')">Yearly Data (Overall)</button>
+                <button onclick="displaySegmentDetail('${segment}', 'transaction_count')">Monthly Data - Transaction Count</button>
+                <button onclick="displaySegmentDetail('${segment}', 'transaction_amount')">Monthly Data - Transaction Amount</button>
+                <button onclick="displaySegmentDetail('${segment}', 'average_ticket_size')">Monthly Data - Ticket Size</button>
+                <button onclick="displaySegmentDetail('${segment}', 'merchant_ticket_size')">Monthly Data - Merchant Ticket Size</button>
+                <button onclick="displaySegmentDetail('${segment}', 'merchant_counts')">Monthly Data - Merchant Counts</button>
+                <button onclick="displaySegmentDetail('${segment}', 'heatmap')">Monthly Data - Heatmap of Transaction Count/Merchant Count Ratio</button>
             </div>
-            <div class="plot-image">
-                <img src="mmg_city_data.png" alt="MMG City Data">
+            <div class="plot-image" id="segmentPlotImage"></div>
+        </div>`;
+        visaPlotContainer.innerHTML = plotHtml;
+    }
+    
+    // Function to display detailed plot for a segment
+    window.displaySegmentDetail = function(segment, type) {
+        const plotImageDiv = document.getElementById('segmentPlotImage');
+        let plotHtml = `<h2>Overall Segment: ${segment}</h2>`;
+        if (segment === "overall") {
+            plotImageDiv.innerHTML = `<img src="new_merchant_segment_plots/overall_${type}.png" alt="Overall ${type.replace('_', ' ')}">`;
+        } else {
+            plotImageDiv.innerHTML = `<img src="new_merchant_segment_plots/${segment}_${type}.png" alt="${type.replace('_', ' ')}">`;
+        }
+    }
+    
+    // Function to display options for the selected category
+    function displayCategoryOptions(segment, code) {
+        let plotHtml = `<div class="plot-and-buttons"><h2>${segment} - ${code}</h2>`;
+        plotHtml += `
+            <div class="buttons">
+                <button onclick="displayCategoryDetail('${segment}', '${code}', 'print_statement')">Yearly Data (Overall)</button>
+                <button onclick="displayCategoryDetail('${segment}', '${code}', 'transaction_count')">Monthly Data - Transaction Count</button>
+                <button onclick="displayCategoryDetail('${segment}', '${code}', 'transaction_amount')">Monthly Data - Transaction Amount</button>
+                <button onclick="displayCategoryDetail('${segment}', '${code}', 'average_ticket_size')">Monthly Data - Average Ticket Size</button>
+                <button onclick="displayCategoryDetail('${segment}', '${code}', 'merchant_ticket_size')">Monthly Data - Merchant Ticket Size</button>
+                <button onclick="displayCategoryDetail('${segment}', '${code}', 'merchant_counts')">Monthly Data - Merchant Counts</button>
+                <button onclick="displayCategoryDetail('${segment}', '${code}', 'heatmap')">Monthly Data - Heatmap</button>
             </div>
-        `;
-    });
-});
+            <div class="plot-image" id="categoryPlotImage"></div>
+        </div>`;
+        visaPlotContainer.innerHTML = plotHtml;
+    }
+    
+    // Function to display detailed plot for a category
+    window.displayCategoryDetail = function(segment, code, type) {
+        const plotImageDiv = document.getElementById('categoryPlotImage');
+        plotImageDiv.innerHTML = `<img src="new_merchant_category_plots/${code}_${type}.png" alt="${type.replace('_', ' ')}">`;
+    }
 
-
-
+    
+    
