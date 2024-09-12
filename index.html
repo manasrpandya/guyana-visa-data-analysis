@@ -3,37 +3,54 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>FlowCatalyst Dashboard</title>
+    <title>Merchant and Segment Analysis</title>
     <style>
         body {
             font-family: Arial, sans-serif;
-            text-align: center;
-            background-color: #f4f4f9;
-            margin: 0;
+        }
+        #searchContainer {
+            position: relative;
+            margin-bottom: 20px;
+        }
+        #searchBoxSegment, #searchBoxCategory {
+            width: 100%;
+            padding: 10px;
+            font-size: 16px;
+            box-sizing: border-box;
+            margin-bottom: 10px;
+        }
+        #segmentList, #categoryList {
+            list-style-type: none;
             padding: 0;
-        }
-        h1 {
-            margin-top: 20px;
-        }
-        .section {
-            margin: 20px auto;
-            padding: 20px;
-            border: 2px solid #007bff;
-            border-radius: 8px;
-            cursor: pointer;
-            width: 300px;
+            margin: 0;
+            max-height: 200px;
+            overflow-y: auto;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            display: none;
+            position: absolute;
+            width: 100%;
             background-color: white;
-            transition: background-color 0.3s ease;
+            z-index: 1;
         }
-        .section:hover {
+        #segmentList li, #categoryList li {
+            padding: 10px;
+            cursor: pointer;
+            border-bottom: 1px solid #ccc;
+            color: black;
+        }
+        #segmentList li:last-child, #categoryList li:last-child {
+            border-bottom: none;
+        }
+        #segmentList li:hover, #categoryList li:hover {
             background-color: #f0f0f0;
         }
-        #searchContainer, #mmgOptions {
-            display: none;
+        #plotContainer {
+            margin-top: 20px;
         }
-        #backButton {
-            display: none;
-            margin: 20px;
+        button {
+            display: block;
+            margin: 10px 0;
             padding: 10px;
             font-size: 16px;
             background-color: #007bff;
@@ -41,12 +58,11 @@
             border: none;
             border-radius: 4px;
             cursor: pointer;
+            width: 100%;
+            text-align: left;
         }
-        #backButton:hover {
+        button:hover {
             background-color: #0056b3;
-        }
-        #plotContainer {
-            margin-top: 20px;
         }
         img {
             max-width: 100%;
@@ -56,26 +72,7 @@
     </style>
 </head>
 <body>
-    <h1>FlowCatalyst Dashboard</h1>
-    
-    <div id="dashboard">
-        <div class="section" id="visaMerchants">
-            <h2>Visa Merchants Data Analysis</h2>
-        </div>
-        <div class="section" id="mmgMerchants">
-            <h2>MMG Merchants Data Analysis</h2>
-        </div>
-    </div>
-
-    <div id="mmgOptions">
-        <div class="section" id="mmgMapView">
-            <h2>Map View of Merchants</h2>
-        </div>
-        <div class="section" id="mmgPlotView">
-            <h2>Plot View</h2>
-        </div>
-    </div>
-
+    <h1>Merchant and Segment Analysis</h1>
     <div id="searchContainer">
         <input type="text" id="searchBoxSegment" placeholder="Search for a segment...">
         <ul id="segmentList"></ul>
@@ -83,10 +80,7 @@
         <input type="text" id="searchBoxCategory" placeholder="Search for a category within the segment..." style="display:none;">
         <ul id="categoryList" style="display:none;"></ul>
     </div>
-    
     <div id="plotContainer"></div>
-    
-    <button id="backButton">Back to Dashboard</button>
 
     <script src="script.js"></script>
 </body>
