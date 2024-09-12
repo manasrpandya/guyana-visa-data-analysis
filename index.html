@@ -9,6 +9,8 @@
             font-family: Arial, sans-serif;
             text-align: center;
         }
+
+        /* Dashboard Sections */
         .section {
             margin: 20px 0;
             padding: 20px;
@@ -18,13 +20,18 @@
             cursor: pointer;
             width: 300px;
         }
+
         .section:hover {
             background-color: #f0f0f0;
         }
-        #searchContainer {
-            display: none;
+
+        /* Container for MMG and Visa Analysis */
+        #searchContainer, #mmgOptions {
+            display: none; /* Initially hidden */
             margin-bottom: 20px;
         }
+
+        /* Back Button */
         #backButton {
             display: none;
             margin: 20px;
@@ -36,12 +43,16 @@
             border-radius: 4px;
             cursor: pointer;
         }
+
         button:hover {
             background-color: #0056b3;
         }
+
+        /* Plot Container */
         #plotContainer {
             margin-top: 20px;
         }
+
         img {
             max-width: 100%;
             height: auto;
@@ -51,7 +62,8 @@
 </head>
 <body>
     <h1>FlowCatalyst Dashboard</h1>
-    
+
+    <!-- Main Dashboard with Sections for Visa and MMG Merchants -->
     <div id="dashboard">
         <div class="section" id="visaMerchants">
             <h2>Visa Merchants Data Analysis</h2>
@@ -61,7 +73,8 @@
         </div>
     </div>
 
-    <div id="mmgOptions" style="display:none;">
+    <!-- MMG Merchants Options (Map and Plot Views) -->
+    <div id="mmgOptions">
         <div class="section" id="mmgMapView">
             <h2>Map View of Merchants</h2>
         </div>
@@ -70,16 +83,19 @@
         </div>
     </div>
 
+    <!-- Search and Plot Container for Visa Merchants Data -->
     <div id="searchContainer">
         <input type="text" id="searchBoxSegment" placeholder="Search for a segment...">
         <ul id="segmentList"></ul>
-        
+
         <input type="text" id="searchBoxCategory" placeholder="Search for a category within the segment..." style="display:none;">
         <ul id="categoryList" style="display:none;"></ul>
     </div>
-    
+
+    <!-- Plot container for MMG and Visa plots -->
     <div id="plotContainer"></div>
-    
+
+    <!-- Back Button -->
     <button id="backButton">Back to Dashboard</button>
 
     <script src="script.js"></script>
