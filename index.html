@@ -8,7 +8,7 @@
         body {
             font-family: Arial, sans-serif;
         }
-        #mainView, #visaDataView, #mmgDataView, #mmgBarPieView, #mmgMapView {
+        #mainView, #visaDataView, #mmgDataView, #mmgBarPieView, #mmgMapView, #growthVisaView, #growthVisaDataView {
             display: none;
         }
         #mainView {
@@ -57,25 +57,25 @@
     <h1>FlowCatalyst Data</h1>
     <button id="backButton">Back</button>
 
-    <!-- Main view with two buttons for Visa Data and MMG Data -->
+    <!-- Main view with buttons for Visa Data, MMG Data, and Growth Visa Data -->
     <div id="mainView">
         <button id="visaDataButton">Visa Data</button>
         <button id="mmgDataButton">MMG Data</button>
+        <button id="growthVisaButton">Growth Visa 6 Month Data</button>
     </div>
 
-    <!-- Visa Data View (current implementation of script.js) -->
+    <!-- Visa Data View -->
     <div id="visaDataView">
         <div id="searchContainer">
             <input type="text" id="searchBoxSegment" placeholder="Search for a segment...">
             <ul id="segmentList"></ul>
-
             <input type="text" id="searchBoxCategory" placeholder="Search for a category within the segment..." style="display:none;">
             <ul id="categoryList" style="display:none;"></ul>
         </div>
         <div id="plotContainer"></div>
     </div>
 
-    <!-- MMG Data View with two buttons: bar/pie charts and map -->
+    <!-- MMG Data View -->
     <div id="mmgDataView">
         <button id="mmgBarPieButton">MMG Data Bar/Pie Charts</button>
         <button id="mmgMapButton">MMG Data Map</button>
@@ -87,8 +87,19 @@
         <img src="mmg_city_data.png" alt="MMG City Data">
     </div>
 
-    <!-- MMG Map View (redirects to another HTML page) -->
-    <div id="mmgMapView"></div>
+    <!-- Growth Visa 6 Month Data View -->
+    <div id="growthVisaView">
+        <button id="domesticButton">View Domestic Data</button>
+        <button id="internationalButton">View International Data</button>
+    </div>
+
+    <!-- Growth Visa Data Display (Domestic/International) -->
+    <div id="growthVisaDataView">
+        <img id="growthVisaImg1" src="" alt="Growth Visa Data 1">
+        <img id="growthVisaImg2" src="" alt="Growth Visa Data 2">
+        <img id="growthVisaImg3" src="" alt="Growth Visa Data 3">
+        <img id="growthVisaImg4" src="" alt="Growth Visa Data 4">
+    </div>
 
     <script src="main.js"></script>
     <script src="script.js"></script>
