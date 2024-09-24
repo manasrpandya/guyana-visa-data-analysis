@@ -12,7 +12,6 @@ document.addEventListener("DOMContentLoaded", function() {
     const visaDataView = document.getElementById('visaDataView');
     const mmgDataView = document.getElementById('mmgDataView');
     const mmgBarPieView = document.getElementById('mmgBarPieView');
-    const mmgMapView = document.getElementById('mmgMapView');
     const growthVisaView = document.getElementById('growthVisaView');
     const growthVisaDataView = document.getElementById('growthVisaDataView');
     const growthVisaImg1 = document.getElementById('growthVisaImg1');
@@ -26,7 +25,6 @@ document.addEventListener("DOMContentLoaded", function() {
         visaDataView.style.display = 'none';
         mmgDataView.style.display = 'none';
         mmgBarPieView.style.display = 'none';
-        mmgMapView.style.display = 'none';
         growthVisaView.style.display = 'none';
         growthVisaDataView.style.display = 'none';
         backButton.style.display = 'block'; // Show back button
@@ -38,7 +36,6 @@ document.addEventListener("DOMContentLoaded", function() {
         visaDataView.style.display = 'none';
         mmgDataView.style.display = 'none';
         mmgBarPieView.style.display = 'none';
-        mmgMapView.style.display = 'none';
         growthVisaView.style.display = 'none';
         growthVisaDataView.style.display = 'none';
         mainView.style.display = 'block';
@@ -78,7 +75,7 @@ document.addEventListener("DOMContentLoaded", function() {
         growthVisaImg4.src = 'Growth_data/dom_placeholder4.png';
         showView(growthVisaDataView);
     });
-    
+
     // When International Data button is clicked
     internationalButton.addEventListener('click', () => {
         growthVisaImg1.src = 'Growth_data/in_placeholder1.png';
@@ -87,5 +84,4 @@ document.addEventListener("DOMContentLoaded", function() {
         growthVisaImg4.src = 'Growth_data/in_placeholder4.png';
         showView(growthVisaDataView);
     });
-
 });
