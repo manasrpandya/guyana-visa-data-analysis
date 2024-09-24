@@ -72,19 +72,20 @@ document.addEventListener("DOMContentLoaded", function() {
 
     // When Domestic Data button is clicked
     domesticButton.addEventListener('click', () => {
-        growthVisaImg1.src = 'domestic_data_1.png';
-        growthVisaImg2.src = 'domestic_data_2.png';
-        growthVisaImg3.src = 'domestic_data_3.png';
-        growthVisaImg4.src = 'domestic_data_4.png';
+        growthVisaImg1.src = 'Growth_data/dom_placeholder1.png';
+        growthVisaImg2.src = 'Growth_data/dom_placeholder2.png';
+        growthVisaImg3.src = 'Growth_data/dom_placeholder3.png';
+        growthVisaImg4.src = 'Growth_data/dom_placeholder4.png';
+        showView(growthVisaDataView);
+    });
+    
+    // When International Data button is clicked
+    internationalButton.addEventListener('click', () => {
+        growthVisaImg1.src = 'Growth_data/in_placeholder1.png';
+        growthVisaImg2.src = 'Growth_data/in_placeholder2.png';
+        growthVisaImg3.src = 'Growth_data/in_placeholder3.png';
+        growthVisaImg4.src = 'Growth_data/in_placeholder4.png';
         showView(growthVisaDataView);
     });
 
-    // When International Data button is clicked
-    internationalButton.addEventListener('click', () => {
-        growthVisaImg1.src = 'international_data_1.png';
-        growthVisaImg2.src = 'international_data_2.png';
-        growthVisaImg3.src = 'international_data_3.png';
-        growthVisaImg4.src = 'international_data_4.png';
-        showView(growthVisaDataView);
-    });
 });
