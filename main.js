@@ -3,6 +3,9 @@ document.addEventListener("DOMContentLoaded", function() {
     const mmgDataButton = document.getElementById('mmgDataButton');
     const mmgBarPieButton = document.getElementById('mmgBarPieButton');
     const mmgMapButton = document.getElementById('mmgMapButton');
+    const growthVisaButton = document.getElementById('growthVisaButton');
+    const domesticButton = document.getElementById('domesticButton');
+    const internationalButton = document.getElementById('internationalButton');
     const backButton = document.getElementById('backButton');
     
     const mainView = document.getElementById('mainView');
@@ -10,6 +13,12 @@ document.addEventListener("DOMContentLoaded", function() {
     const mmgDataView = document.getElementById('mmgDataView');
     const mmgBarPieView = document.getElementById('mmgBarPieView');
     const mmgMapView = document.getElementById('mmgMapView');
+    const growthVisaView = document.getElementById('growthVisaView');
+    const growthVisaDataView = document.getElementById('growthVisaDataView');
+    const growthVisaImg1 = document.getElementById('growthVisaImg1');
+    const growthVisaImg2 = document.getElementById('growthVisaImg2');
+    const growthVisaImg3 = document.getElementById('growthVisaImg3');
+    const growthVisaImg4 = document.getElementById('growthVisaImg4');
 
     // Helper function to show/hide views
     function showView(view) {
@@ -18,6 +27,8 @@ document.addEventListener("DOMContentLoaded", function() {
         mmgDataView.style.display = 'none';
         mmgBarPieView.style.display = 'none';
         mmgMapView.style.display = 'none';
+        growthVisaView.style.display = 'none';
+        growthVisaDataView.style.display = 'none';
         backButton.style.display = 'block'; // Show back button
         view.style.display = 'block';
     }
@@ -28,6 +39,8 @@ document.addEventListener("DOMContentLoaded", function() {
         mmgDataView.style.display = 'none';
         mmgBarPieView.style.display = 'none';
         mmgMapView.style.display = 'none';
+        growthVisaView.style.display = 'none';
+        growthVisaDataView.style.display = 'none';
         mainView.style.display = 'block';
         backButton.style.display = 'none'; // Hide back button
     });
@@ -50,5 +63,28 @@ document.addEventListener("DOMContentLoaded", function() {
     // When MMG Map button is clicked, go to mmg_map.html
     mmgMapButton.addEventListener('click', () => {
         window.location.href = 'mmg_map.html'; // Redirect to mmg_map.html
+    });
+
+    // When Growth Visa 6 Month Data button is clicked
+    growthVisaButton.addEventListener('click', () => {
+        showView(growthVisaView);
+    });
+
+    // When Domestic Data button is clicked
+    domesticButton.addEventListener('click', () => {
+        growthVisaImg1.src = 'domestic_data_1.png';
+        growthVisaImg2.src = 'domestic_data_2.png';
+        growthVisaImg3.src = 'domestic_data_3.png';
+        growthVisaImg4.src = 'domestic_data_4.png';
+        showView(growthVisaDataView);
+    });
+
+    // When International Data button is clicked
+    internationalButton.addEventListener('click', () => {
+        growthVisaImg1.src = 'international_data_1.png';
+        growthVisaImg2.src = 'international_data_2.png';
+        growthVisaImg3.src = 'international_data_3.png';
+        growthVisaImg4.src = 'international_data_4.png';
+        showView(growthVisaDataView);
     });
 });
